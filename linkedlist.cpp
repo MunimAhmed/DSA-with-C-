@@ -9,10 +9,10 @@ class node{
 
 void insertionhead(node* &head, int data)
 {
-node* a= new node();
-a->val=data;
-a->next=head;
-head= a;
+    node* a= new node();
+    a->val=data;
+    a->next=head;
+    head= a;
 }
 
 void insertiontail(node* &head, int data)
@@ -58,6 +58,48 @@ void insertionindex(node* &head, int index, int data)
 
 }
 
+node* reverse(node* &head)
+{
+    node* prevptr=NULL;
+    node* currptr=head;
+    node* nextptr;
+
+    while(currptr!=NULL)
+    {
+        nextptr=currptr->next;
+        currptr->next=prevptr;
+        prevptr=currptr;
+        currptr=nextptr;
+
+    }
+    return prevptr;
+}
+
+node* reversek(node* &head, int k)
+{
+    node *prevptr=NULL;
+    node *currptr=head;
+    node *nextptr;
+
+    int count=0;
+    while(currptr!=NULL && count<k)
+    {
+        nextptr=currptr->next;
+        currptr->next=prevptr;
+        prevptr=currptr;
+        currptr=nextptr;
+        count++;
+    }
+
+    if(nextptr!= NULL)
+    {
+    head->next=reversek(nextptr, k);
+    }
+
+    return prevptr;
+
+}
+
 void display(node* head)
 {
     node* temp=head;
@@ -77,6 +119,10 @@ int main(){
     insertiontail(head, 10);
     insertionindex(head, 1, 5);
     display(head);
+    int k=2;
+    node* newhead= reversek(head, k);
+    //node* newhead= reverse(head);
+    display(newhead);
 
     return 0;
 }
