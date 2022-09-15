@@ -6,7 +6,7 @@ using namespace std;
 
 int isOperator(char ch)
 {
-    if(ch=='+' || ch == '-' || ch == '*' || ch == '/')
+    if(ch=='+' || ch == '-' || ch == '*' || ch == '/' || ch == '^' || ch == '(' || ch == ')')
         return 1;
     else
         return 0;
@@ -15,7 +15,9 @@ int isOperator(char ch)
 int precedence(char ch)
 {
     //for limited input only
-    if(ch == '*' || ch == '/')
+    if(ch == '^')
+        return 4;
+    else if(ch == '*' || ch == '/')
         return 3;
     else if(ch=='+' || ch == '-' )
         return 2;
@@ -32,17 +34,36 @@ string infixtopostfix(string infix)
     {
         if(!isOperator(infix[i]))
         {
-           postfix.push_back(infix[i]);
+           postfix+=infix[i];
             i++;
         }
+
         else{
-            if(st.empty() || precedence(infix[i])>precedence(st.top()))
+            if(infix[i]== '(')
+            {
+               st.push(infix[i]);
+               i++;
+            }
+            else if(infix[i]== ')')
+            {
+                while(!st.empty() && st.top()!='(')
+                {
+                    postfix+=st.top();
+                    st.pop();
+                }
+                if(!st.empty())
+                {
+                    st.pop();
+                }
+                i++;
+            }
+            else if(st.empty() || precedence(infix[i])>precedence(st.top()))
             {
                 st.push(infix[i]);
                 i++;
             }
             else{
-                postfix.push_back(st.top());
+                postfix+=st.top();
                 st.pop();
             }
         }
@@ -50,7 +71,7 @@ string infixtopostfix(string infix)
 
     while(!st.empty())
     {
-        postfix.push_back(st.top());
+        postfix+=st.top();
         st.pop();
     }
 
@@ -60,7 +81,7 @@ string infixtopostfix(string infix)
 
 int main()
 {
-string infix= "a+b/c-d*g";
+string infix= "(a+b)/c-d*g";
 cout<<"Infix-->"<<infix<<endl;
 cout<<"Postfix-->"<<infixtopostfix(infix)<<endl;
 return 0;
